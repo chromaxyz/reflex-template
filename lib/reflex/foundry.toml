@@ -1,0 +1,49 @@
+#
+# Profiles: `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
+#
+# ==================
+# Profile: `default`
+# ==================
+[profile.default]
+solc = "0.8.19"
+optimizer = true
+optimizer_runs = 10_000
+auto_detect_solc = false
+libs = ["node_modules", "lib"]
+
+[profile.default.fuzz]
+runs = 1_000
+
+# ==================
+# Profile: `intense`
+# ==================
+[profile.intense.fuzz]
+runs = 10_000
+
+# =================
+# Profile: `via-ir`
+# =================
+[profile.via-ir]
+via_ir = true
+
+[profile.via-ir.fuzz]
+runs = 1_000
+
+# ===================
+# Profile: `min-solc`
+# ===================
+[profile.min-solc]
+solc = "0.8.13"
+
+[profile.min-solc.fuzz]
+runs = 1_000
+
+# ==========================
+# Profile: `min-solc-via-ir`
+# ==========================
+[profile.min-solc-via-ir]
+via_ir = true
+solc = "0.8.13"
+
+[profile.min-solc-via-ir.fuzz]
+runs = 1_000

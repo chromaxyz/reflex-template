@@ -1,0 +1,14 @@
+[book]
+authors = ["Chroma"]
+language = "en"
+multilingual = false
+title = "Reflex"
+description = "Documentation for Reflex"
+
+[output.html]
+git-repository-url = "https://github.com/chroma-org/reflex.git"
+default-theme = "ayu"
+no-section-label = true
+
+[output.html.fold]
+enable = true
