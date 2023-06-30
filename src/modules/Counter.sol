@@ -32,7 +32,7 @@ contract Counter is Module {
     /**
      * @notice Increment the counter.
      */
-     function increment() external {
+    function increment() external {
         _APP_STORAGE().counter += 1;
     }
 

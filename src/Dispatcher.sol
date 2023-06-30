@@ -19,7 +19,5 @@ contract Dispatcher is ReflexDispatcher, State {
      * @param owner_ Protocol owner.
      * @param installerModule_ Installer module address.
      */
-    constructor(address owner_, address installerModule_) ReflexDispatcher(owner_, installerModule_) {
-        
-    }
+    constructor(address owner_, address installerModule_) ReflexDispatcher(owner_, installerModule_) {}
 }
