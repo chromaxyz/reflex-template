@@ -5,12 +5,12 @@ pragma solidity ^0.8.13;
 import {ReflexInstaller} from "reflex/ReflexInstaller.sol";
 
 // Abstracts
-import {Module} from "../abstracts/Module.sol";
+import {AppModule} from "../abstracts/AppModule.sol";
 
 /**
  * @title Installer
  */
-contract Installer is ReflexInstaller, Module {
+contract Installer is ReflexInstaller, AppModule {
     // ===========
     // Constructor
     // ===========
@@ -18,5 +18,5 @@ contract Installer is ReflexInstaller, Module {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) Module(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) AppModule(moduleSettings_) {}
 }

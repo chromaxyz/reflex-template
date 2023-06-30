@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Abstracts
-import {Module} from "../abstracts/Module.sol";
+import {AppModule} from "../abstracts/AppModule.sol";
 
 /**
- * @title Counter
+ * @title Increment Counter
  */
-contract Counter is Module {
+contract IncrementCounter is AppModule {
     // ===========
     // Constructor
     // ===========
@@ -15,7 +15,7 @@ contract Counter is Module {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) Module(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) AppModule(moduleSettings_) {}
 
     // ============
     // View methods
@@ -34,20 +34,5 @@ contract Counter is Module {
      */
     function increment() external {
         _APP_STORAGE().counter += 1;
-    }
-
-    /**
-     * @notice Decrement the counter.
-     */
-    function decrement() external {
-        _APP_STORAGE().counter -= 1;
-    }
-
-    /**
-     * @notice Set the counter.
-     * @param number_ Counter number.
-     */
-    function setNumber(uint256 number_) external {
-        _APP_STORAGE().counter = number_;
     }
 }

@@ -6,19 +6,20 @@ import {Test} from "forge-std/Test.sol";
 import {IReflexModule} from "reflex/interfaces/IReflexModule.sol";
 
 // Abstracts
-import {Constants} from "../src/abstracts/Constants.sol";
+import {AppConstants} from "../src/abstracts/AppConstants.sol";
 
 // Modules
-import {Counter} from "../src/modules/Counter.sol";
+import {DecrementCounter} from "../src/modules/DecrementCounter.sol";
+import {IncrementCounter} from "../src/modules/IncrementCounter.sol";
 import {Installer} from "../src/modules/Installer.sol";
 
 // Sources
-import {Dispatcher} from "../src/Dispatcher.sol";
+import {AppDispatcher} from "../src/AppDispatcher.sol";
 
 /**
  * @title App Test
  */
-contract AppTest is Test, Constants {
+contract AppTest is Test, AppConstants {
     // =======
     // Storage
     // =======
@@ -26,10 +27,13 @@ contract AppTest is Test, Constants {
     Installer public installer;
     Installer public installerEndpoint;
 
-    Dispatcher public dispatcher;
+    AppDispatcher public dispatcher;
 
-    Counter public counter;
-    Counter public counterEndpoint;
+    DecrementCounter public decrementCounter;
+    DecrementCounter public decrementCounterEndpoint;
+
+    IncrementCounter public incrementCounter;
+    IncrementCounter public incrementCounterEndpoint;
 
     function setUp() public {
         // Set up installer module.
@@ -42,10 +46,20 @@ contract AppTest is Test, Constants {
             })
         );
 
-        // Set up counter module.
-        counter = new Counter(
+        // Set up decrement counter module.
+        decrementCounter = new DecrementCounter(
             IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_COUNTER,
+                moduleId: _MODULE_ID_DECREMENT_COUNTER,
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
+                moduleVersion: 1,
+                moduleUpgradeable: true
+            })
+        );
+
+        // Set up increment counter module.
+        incrementCounter = new IncrementCounter(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_ID_INCREMENT_COUNTER,
                 moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
                 moduleVersion: 1,
                 moduleUpgradeable: true
@@ -53,39 +67,37 @@ contract AppTest is Test, Constants {
         );
 
         // Set up dispatcher.
-        dispatcher = new Dispatcher(address(this), address(installer));
+        dispatcher = new AppDispatcher(address(this), address(installer));
 
         // Fetch installer endpoint.
         installerEndpoint = Installer(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
 
         // Install modules.
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(counter);
+        address[] memory moduleAddresses = new address[](2);
+        moduleAddresses[0] = address(decrementCounter);
+        moduleAddresses[1] = address(incrementCounter);
         installerEndpoint.addModules(moduleAddresses);
 
-        // Fetch counter endpoint
-        counterEndpoint = Counter(dispatcher.getEndpoint(_MODULE_ID_COUNTER));
+        // Fetch decrement counter endpoint.
+        decrementCounterEndpoint = DecrementCounter(dispatcher.getEndpoint(_MODULE_ID_DECREMENT_COUNTER));
+
+        // Fetch increment counter endpoint.
+        incrementCounterEndpoint = IncrementCounter(dispatcher.getEndpoint(_MODULE_ID_INCREMENT_COUNTER));
     }
 
     function testUnitCounterIncrementDecrement() public {
         // Increment counter.
-        counterEndpoint.increment();
+        incrementCounterEndpoint.increment();
 
         // Assert counter value.
-        assertEq(counterEndpoint.count(), 1);
+        assertEq(incrementCounterEndpoint.count(), 1);
+        assertEq(decrementCounterEndpoint.count(), 1);
 
         // Decrement counter.
-        counterEndpoint.decrement();
+        decrementCounterEndpoint.decrement();
 
         // Assert counter value.
-        assertEq(counterEndpoint.count(), 0);
-    }
-
-    function testFuzzCounterSetNumber(uint256 number_) public {
-        // Set number.
-        counterEndpoint.setNumber(number_);
-
-        // Assert counter value.
-        assertEq(counterEndpoint.count(), number_);
+        assertEq(incrementCounterEndpoint.count(), 0);
+        assertEq(decrementCounterEndpoint.count(), 0);
     }
 }

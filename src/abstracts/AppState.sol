@@ -5,12 +5,12 @@ pragma solidity ^0.8.13;
 import {ReflexState} from "reflex/ReflexState.sol";
 
 // Abstracts
-import {Constants} from "./Constants.sol";
+import {AppConstants} from "./AppConstants.sol";
 
 /**
- * @title State
+ * @title App State
  */
-abstract contract State is ReflexState, Constants {
+abstract contract AppState is ReflexState, AppConstants {
     // =========
     // Constants
     // =========

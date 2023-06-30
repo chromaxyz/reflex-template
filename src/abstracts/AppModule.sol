@@ -5,9 +5,12 @@ pragma solidity ^0.8.13;
 import {ReflexModule} from "reflex/ReflexModule.sol";
 
 // Abstracts
-import {State} from "./State.sol";
+import {AppBase} from "./AppBase.sol";
 
-abstract contract Module is ReflexModule, State {
+/**
+ * @title App Module
+ */
+abstract contract AppModule is ReflexModule, AppBase {
     // ===========
     // Constructor
     // ===========
