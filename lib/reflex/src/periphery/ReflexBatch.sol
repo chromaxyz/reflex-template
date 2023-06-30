@@ -91,10 +91,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     function simulateBatchCallReturn(
         BatchAction[] calldata actions_
     ) public virtual reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
-        // NOTE: it is assumed user will never be able to control _modules (storage) nor _moduleId (immutable).
-        // TODO: _unpackEndpointAddress could be replaced by msg.sender.
-
-        (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
+        // WARNING: It is assumed attacker will never be able to control _modules (storage) nor _moduleId (immutable).
+        (bool success, bytes memory result) = _REFLEX_STORAGE().modules[_moduleId].delegatecall(
             abi.encodePacked(
                 abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector, actions_),
                 uint160(_unpackMessageSender()),
@@ -145,13 +143,13 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         BatchAction calldata action_
     ) internal virtual returns (bool success_, bytes memory returnData_) {
         address endpointAddress = action_.endpointAddress;
-        uint32 moduleId_ = _relations[endpointAddress].moduleId;
+        uint32 moduleId_ = _REFLEX_STORAGE().relations[endpointAddress].moduleId;
 
-        if (moduleId_ == 0) revert ModuleIdInvalid();
+        if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);
 
-        address moduleImplementation = _relations[endpointAddress].moduleImplementation;
+        address moduleImplementation = _REFLEX_STORAGE().relations[endpointAddress].moduleImplementation;
 
-        if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId_];
+        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId_];
 
         if (moduleImplementation == address(0)) revert ModuleNotRegistered(moduleId_);
 

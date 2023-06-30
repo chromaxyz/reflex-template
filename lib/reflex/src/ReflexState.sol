@@ -9,69 +9,69 @@ import {ReflexConstants} from "./ReflexConstants.sol";
 
 /**
  * @title Reflex State
- * @dev Append-only extendable, only after __gap: first 50 slots (0-49) are reserved!
- *
- * @dev Storage layout:
- * | Name              | Type                                                  | Slot | Offset | Bytes |
- * |-------------------|-------------------------------------------------------|------|--------|-------|
- * | _reentrancyStatus | uint256                                               | 0    | 0      | 32    |
- * | _owner            | address                                               | 1    | 0      | 20    |
- * | _pendingOwner     | address                                               | 2    | 0      | 20    |
- * | _modules          | mapping(uint32 => address)                            | 3    | 0      | 32    |
- * | _endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    |
- * | _relations        | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    |
- * | __gap             | uint256[44]                                           | 6    | 0      | 1408  |
+ * @dev Append-only extendable.
  */
 abstract contract ReflexState is IReflexState, ReflexConstants {
+    // =========
+    // Constants
+    // =========
+
+    /**
+     * @dev `bytes32(uint256(keccak256("_REFLEX_STORAGE")) - 1)`
+     * A `-1` offset is added so the preimage of the hash cannot be known,
+     * reducing the chances of a possible attack.
+     */
+    bytes32 internal constant _REFLEX_STORAGE_SLOT = 0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09;
+
     // =======
     // Storage
     // =======
 
     /**
-     * @dev Global reentrancy status tracker.
-     * @dev Slot 0 (32 bytes).
+     * @dev Append-only extendable.
      */
-    uint256 internal _reentrancyStatus;
+    struct ReflexStorage {
+        /**
+         * @dev Global reentrancy status tracker.
+         */
+        uint256 reentrancyStatus;
+        /**
+         * @dev Owner address.
+         */
+        address owner;
+        /**
+         * @dev Pending owner address.
+         */
+        address pendingOwner;
+        /**
+         * @dev Module mapping.
+         * @dev Module id => module implementation.
+         */
+        mapping(uint32 => address) modules;
+        /**
+         * @dev Endpoint mapping.
+         * @dev Module id => endpoint address (only for single-endpoint modules).
+         */
+        mapping(uint32 => address) endpoints;
+        /**
+         * @dev Endpoint to module relation mapping.
+         * @dev Endpoint address => TrustRelation { moduleId, moduleType, moduleImplementation }.
+         */
+        mapping(address => TrustRelation) relations;
+    }
+
+    // ================
+    // Internal methods
+    // ================
 
     /**
-     * @dev Owner address.
-     * @dev Slot 1 (20 bytes).
+     * @dev Get the Reflex storage pointer.
+     * @return storage_ Pointer to the Reflex storage state.
      */
-    address internal _owner;
-
-    /**
-     * @dev Pending owner address.
-     * @dev Slot 2 (20 bytes).
-     */
-    address internal _pendingOwner;
-
-    /**
-     * @dev Internal module mapping.
-     * @dev Module id => module implementation.
-     * @dev Slot 3 (32 bytes).
-     */
-    mapping(uint32 => address) internal _modules;
-
-    /**
-     * @dev Internal endpoint mapping.
-     * @dev Module id => endpoint address (only for single-endpoint modules).
-     * @dev Slot 4 (32 bytes).
-     */
-    mapping(uint32 => address) internal _endpoints;
-
-    /**
-     * @dev Internal endpoint to module relation mapping.
-     * @dev Endpoint address => TrustRelation { moduleId, moduleType, moduleImplementation }.
-     * @dev Slot 5 (32 bytes).
-     */
-    mapping(address => TrustRelation) internal _relations;
-
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * The size of the __gap array is calculated so that the amount of storage used by a
-     * contract always adds up to the same number (in this case 50 storage slots, 0 to 49).
-     * @dev Slot 6 (1408 bytes).
-     */
-    uint256[44] private __gap;
+    // solhint-disable-next-line func-name-mixedcase
+    function _REFLEX_STORAGE() internal pure returns (ReflexStorage storage storage_) {
+        assembly {
+            storage_.slot := _REFLEX_STORAGE_SLOT
+        }
+    }
 }

@@ -1,145 +1,261 @@
-**THIS CHECKLIST IS NOT COMPLETE**. Use `--show-ignored-findings` to show all the results.
 Summary
 
-- [controlled-delegatecall](#controlled-delegatecall) (2 results) (High)
-- [uninitialized-state](#uninitialized-state) (3 results) (High)
 - [calls-loop](#calls-loop) (6 results) (Low)
-- [low-level-calls](#low-level-calls) (5 results) (Informational)
+- [assembly](#assembly) (11 results) (Informational)
+- [solc-version](#solc-version) (16 results) (Informational)
+- [low-level-calls](#low-level-calls) (4 results) (Informational)
+- [naming-convention](#naming-convention) (7 results) (Informational)
 - [similar-names](#similar-names) (1 results) (Informational)
-- [constable-states](#constable-states) (2 results) (Optimization)
-- [immutable-states](#immutable-states) (1 results) (Optimization)
-
-## controlled-delegatecall
-
-Impact: High
-Confidence: Medium
-
-- [ ] ID-0
-      [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L119-L125) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L120)
-
-../src/ReflexBase.sol#L119-L125
-
-- [ ] ID-1
-      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L143-L161) uses delegatecall to a input-controlled function id - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L158-L160)
-
-../src/periphery/ReflexBatch.sol#L143-L161
-
-## uninitialized-state
-
-Impact: High
-Confidence: High
-
-- [ ] ID-2
-      [ReflexState.\_modules](../src/ReflexState.sol#L53) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L119-L125) - [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L91-L114) - [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L143-L161)
-
-../src/ReflexState.sol#L53
-
-- [ ] ID-3
-      [ReflexState.\_modules](../src/ReflexState.sol#L53) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L119-L125)
-
-../src/ReflexState.sol#L53
-
-- [ ] ID-4
-      [ReflexState.\_owner](../src/ReflexState.sol#L40) is never initialized. It is used in:
-
-../src/ReflexState.sol#L40
 
 ## calls-loop
 
 Impact: Low
 Confidence: Medium
 
-- [ ] ID-5
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L116-L155) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L132)
+- [ ] ID-0
+      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L141-L159) has external calls inside a loop: [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L156-L158)
 
-../src/ReflexInstaller.sol#L116-L155
+../src/periphery/ReflexBatch.sol#L141-L159
+
+- [ ] ID-1
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L117-L163) has external calls inside a loop: [! IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L130)
+
+../src/ReflexInstaller.sol#L117-L163
+
+- [ ] ID-2
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L117-L163) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_REFLEX_STORAGE().modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L135-L136)
+
+../src/ReflexInstaller.sol#L117-L163
+
+- [ ] ID-3
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L117-L163) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L123)
+
+../src/ReflexInstaller.sol#L117-L163
+
+- [ ] ID-4
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L117-L163) has external calls inside a loop: [moduleSettings*.moduleType != IReflexModule(\_REFLEX_STORAGE().modules[moduleSettings*.moduleId]).moduleType()](../src/ReflexInstaller.sol#L141-L142)
+
+../src/ReflexInstaller.sol#L117-L163
+
+- [ ] ID-5
+      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L84-L112) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L90)
+
+../src/ReflexInstaller.sol#L84-L112
+
+## assembly
+
+Impact: Informational
+Confidence: High
 
 - [ ] ID-6
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L116-L155) has external calls inside a loop: [moduleSettings*.moduleType != IReflexModule(\_modules[moduleSettings*.moduleId]).moduleType()](../src/ReflexInstaller.sol#L136)
+      [ReflexDispatcher.constructor(address,address)](../src/ReflexDispatcher.sol#L28-L77) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L54-L64)
 
-../src/ReflexInstaller.sol#L116-L155
+../src/ReflexDispatcher.sol#L28-L77
 
 - [ ] ID-7
-      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L143-L161) has external calls inside a loop: [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L158-L160)
+      [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L91-L112) uses assembly - [INLINE ASM](../src/periphery/ReflexBatch.sol#L107-L109)
 
-../src/periphery/ReflexBatch.sol#L143-L161
+../src/periphery/ReflexBatch.sol#L91-L112
 
 - [ ] ID-8
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L116-L155) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L122)
+      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L112-L151) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L127-L150)
 
-../src/ReflexInstaller.sol#L116-L155
+../src/ReflexDispatcher.sol#L112-L151
 
 - [ ] ID-9
-      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L84-L111) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L90)
+      [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L72-L76) uses assembly - [INLINE ASM](../src/ReflexState.sol#L73-L75)
 
-../src/ReflexInstaller.sol#L84-L111
+../src/ReflexState.sol#L72-L76
 
 - [ ] ID-10
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L116-L155) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L128)
+      [ReflexBase.\_unpackTrailingParameters()](../src/ReflexBase.sol#L155-L166) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L162-L165)
 
-../src/ReflexInstaller.sol#L116-L155
+../src/ReflexBase.sol#L155-L166
+
+- [ ] ID-11
+      [ReflexBase.\_unpackMessageSender()](../src/ReflexBase.sol#L132-L137) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L134-L136)
+
+../src/ReflexBase.sol#L132-L137
+
+- [ ] ID-12
+      [ReflexBase.\_unpackEndpointAddress()](../src/ReflexBase.sol#L143-L148) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L145-L147)
+
+../src/ReflexBase.sol#L143-L148
+
+- [ ] ID-13
+      [ReflexBase.\_createEndpoint(uint32,uint16,address)](../src/ReflexBase.sol#L68-L102) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L81-L91)
+
+../src/ReflexBase.sol#L68-L102
+
+- [ ] ID-14
+      [ReflexEndpoint.fallback()](../src/ReflexEndpoint.sol#L50-L132) uses assembly - [INLINE ASM](../src/ReflexEndpoint.sol#L56-L101) - [INLINE ASM](../src/ReflexEndpoint.sol#L104-L130)
+
+../src/ReflexEndpoint.sol#L50-L132
+
+- [ ] ID-15
+      [ReflexBase.\_revertBytes(bytes)](../src/ReflexBase.sol#L172-L180) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L174-L176)
+
+../src/ReflexBase.sol#L172-L180
+
+- [ ] ID-16
+      [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L24-L34) uses assembly - [INLINE ASM](../src/periphery/ReflexBatch.sol#L31-L33)
+
+../src/periphery/ReflexBatch.sol#L24-L34
+
+## solc-version
+
+Impact: Informational
+Confidence: High
+
+- [ ] ID-17
+      Pragma version[^0.8.13](../src/interfaces/IReflexModule.sol#L2) allows old versions
+
+../src/interfaces/IReflexModule.sol#L2
+
+- [ ] ID-18
+      Pragma version[^0.8.13](../src/periphery/ReflexBatch.sol#L2) allows old versions
+
+../src/periphery/ReflexBatch.sol#L2
+
+- [ ] ID-19
+      Pragma version[^0.8.13](../src/interfaces/IReflexDispatcher.sol#L2) allows old versions
+
+../src/interfaces/IReflexDispatcher.sol#L2
+
+- [ ] ID-20
+      Pragma version[^0.8.13](../src/ReflexBase.sol#L2) allows old versions
+
+../src/ReflexBase.sol#L2
+
+- [ ] ID-21
+      Pragma version[^0.8.13](../src/interfaces/IReflexEndpoint.sol#L2) allows old versions
+
+../src/interfaces/IReflexEndpoint.sol#L2
+
+- [ ] ID-22
+      Pragma version[^0.8.13](../src/interfaces/IReflexState.sol#L2) allows old versions
+
+../src/interfaces/IReflexState.sol#L2
+
+- [ ] ID-23
+      Pragma version[^0.8.13](../src/interfaces/IReflexInstaller.sol#L2) allows old versions
+
+../src/interfaces/IReflexInstaller.sol#L2
+
+- [ ] ID-24
+      Pragma version[^0.8.13](../src/ReflexEndpoint.sol#L2) allows old versions
+
+../src/ReflexEndpoint.sol#L2
+
+- [ ] ID-25
+      Pragma version[^0.8.13](../src/periphery/interfaces/IReflexBatch.sol#L2) allows old versions
+
+../src/periphery/interfaces/IReflexBatch.sol#L2
+
+- [ ] ID-26
+      Pragma version[^0.8.13](../src/ReflexConstants.sol#L2) allows old versions
+
+../src/ReflexConstants.sol#L2
+
+- [ ] ID-27
+      Pragma version[^0.8.13](../src/ReflexModule.sol#L2) allows old versions
+
+../src/ReflexModule.sol#L2
+
+- [ ] ID-28
+      solc-0.8.19 is not recommended for deployment
+
+- [ ] ID-29
+      Pragma version[^0.8.13](../src/ReflexState.sol#L2) allows old versions
+
+../src/ReflexState.sol#L2
+
+- [ ] ID-30
+      Pragma version[^0.8.13](../src/interfaces/IReflexBase.sol#L2) allows old versions
+
+../src/interfaces/IReflexBase.sol#L2
+
+- [ ] ID-31
+      Pragma version[^0.8.13](../src/ReflexInstaller.sol#L2) allows old versions
+
+../src/ReflexInstaller.sol#L2
+
+- [ ] ID-32
+      Pragma version[^0.8.13](../src/ReflexDispatcher.sol#L2) allows old versions
+
+../src/ReflexDispatcher.sol#L2
 
 ## low-level-calls
 
 Impact: Informational
 Confidence: High
 
-- [ ] ID-11
-      Low level call in [ReflexEndpoint.implementation()](../src/ReflexEndpoint.sol#L61-L71): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR,\_moduleId))](../src/ReflexEndpoint.sol#L62-L64)
+- [ ] ID-33
+      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L119-L126): - [(success,result) = _REFLEX_STORAGE().modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L121)
 
-../src/ReflexEndpoint.sol#L61-L71
+../src/ReflexBase.sol#L119-L126
 
-- [ ] ID-12
+- [ ] ID-34
       Low level call in [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L24-L34): - [(success,result) = contractAddress*.staticcall(callData*)](../src/periphery/ReflexBatch.sol#L27)
 
 ../src/periphery/ReflexBatch.sol#L24-L34
 
-- [ ] ID-13
-      Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L91-L114): - [(success,result) = _modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L97-L103)
+- [ ] ID-35
+      Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L141-L159): - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L156-L158)
 
-../src/periphery/ReflexBatch.sol#L91-L114
+../src/periphery/ReflexBatch.sol#L141-L159
 
-- [ ] ID-14
-      Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L143-L161): - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L158-L160)
+- [ ] ID-36
+      Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L91-L112): - [(success,result) = _REFLEX_STORAGE().modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L95-L101)
 
-../src/periphery/ReflexBatch.sol#L143-L161
+../src/periphery/ReflexBatch.sol#L91-L112
 
-- [ ] ID-15
-      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L119-L125): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L120)
+## naming-convention
 
-../src/ReflexBase.sol#L119-L125
+Impact: Informational
+Confidence: High
+
+- [ ] ID-37
+      Variable [ReflexModule.\_moduleId](../src/ReflexModule.sol#L24) is not in mixedCase
+
+../src/ReflexModule.sol#L24
+
+- [ ] ID-38
+      Function [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L72-L76) is not in mixedCase
+
+../src/ReflexState.sol#L72-L76
+
+- [ ] ID-39
+      Variable [ReflexEndpoint.\_deployer](../src/ReflexEndpoint.sol#L26) is not in mixedCase
+
+../src/ReflexEndpoint.sol#L26
+
+- [ ] ID-40
+      Variable [ReflexEndpoint.\_moduleId](../src/ReflexEndpoint.sol#L21) is not in mixedCase
+
+../src/ReflexEndpoint.sol#L21
+
+- [ ] ID-41
+      Variable [ReflexModule.\_moduleVersion](../src/ReflexModule.sol#L34) is not in mixedCase
+
+../src/ReflexModule.sol#L34
+
+- [ ] ID-42
+      Variable [ReflexModule.\_moduleUpgradeable](../src/ReflexModule.sol#L39) is not in mixedCase
+
+../src/ReflexModule.sol#L39
+
+- [ ] ID-43
+      Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is not in mixedCase
+
+../src/ReflexModule.sol#L29
 
 ## similar-names
 
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-16
+- [ ] ID-44
       Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is too similar to [ReflexBase._createEndpoint(uint32,uint16,address).moduleType_](../src/ReflexBase.sol#L70)
 
 ../src/ReflexModule.sol#L29
-
-## constable-states
-
-Impact: Optimization
-Confidence: High
-
-- [ ] ID-17
-      [ReflexState.\_owner](../src/ReflexState.sol#L40) should be constant
-
-../src/ReflexState.sol#L40
-
-- [ ] ID-18
-      [ReflexState.\_pendingOwner](../src/ReflexState.sol#L46) should be constant
-
-../src/ReflexState.sol#L46
-
-## immutable-states
-
-Impact: Optimization
-Confidence: High
-
-- [ ] ID-19
-      [ReflexState.\_owner](../src/ReflexState.sol#L40) should be immutable
-
-../src/ReflexState.sol#L40

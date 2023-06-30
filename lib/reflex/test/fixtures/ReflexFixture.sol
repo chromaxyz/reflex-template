@@ -13,14 +13,21 @@ import {MockReflexDispatcher} from "../mocks/MockReflexDispatcher.sol";
 
 // Fixtures
 import {TestHarness} from "./TestHarness.sol";
-
-// Script
-import {DeployConstants} from "../../script/Deploy.s.sol";
+import {MockHarness} from "./MockHarness.sol";
 
 /**
  * @title Reflex Fixture
  */
-abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness {
+abstract contract ReflexFixture is ReflexConstants, TestHarness, MockHarness {
+    // =========
+    // Constants
+    // =========
+
+    uint32 internal constant _MODULE_VERSION_INSTALLER_V1 = 1;
+    uint32 internal constant _MODULE_VERSION_INSTALLER_V2 = 2;
+    bool internal constant _MODULE_UPGRADEABLE_INSTALLER_V1 = true;
+    bool internal constant _MODULE_UPGRADEABLE_INSTALLER_V2 = true;
+
     // =======
     // Storage
     // =======
@@ -56,7 +63,7 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
         );
 
         dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
-        installerEndpoint = MockReflexInstaller(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER));
+        installerEndpoint = MockReflexInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
     }
 
     // ==========
