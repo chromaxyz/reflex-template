@@ -23,14 +23,6 @@ function log () {
   echo -e "\033[0m"
 }
 
-# Variables
-while getopts n: flag
-do
-  case "${flag}" in
-    n) NETWORK=${OPTARG};;
-  esac
-done
-
 log $GREEN "Deploying on local Anvil instance"
 
 forge script script/Deploy.s.sol \
