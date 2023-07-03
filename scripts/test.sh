@@ -40,7 +40,7 @@ export FOUNDRY_PROFILE=$PROFILE
 
 log $GREEN "Running tests with profile: $PROFILE"
 
-if [[ "$PROFILE" = "default" || "$PROFILE" = "intense" || "$PROFILE" = "min-solc" || "$PROFILE" = "via-ir" || "$PROFILE" = "min-solc-via-ir" ]]; then
+if [[ "$PROFILE" = "default" || "$PROFILE" = "via-ir" ]]; then
   forge test \
     --match-test $SCOPE \
     --verbosity $VERBOSITY
