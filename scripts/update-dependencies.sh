@@ -26,7 +26,7 @@ cd lib
 
 rm -rf reflex/
 
-git clone --branch feat/optimisations-and-improvements --depth=1 git@github.com:chroma-org/reflex.git
+git clone --branch feat/inline-reflex-base-into-reflex-module --depth=1 git@github.com:chroma-org/reflex.git
 
 rm -rf reflex/.git
 
