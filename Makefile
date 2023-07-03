@@ -30,3 +30,6 @@ test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
 # Where TEST_NAME is for example `testUnitMetadata`.
 # Where VERBOSITY is for example `3`.
 
+# Deploy
+deploy-local:; ./scripts/deploy.sh
+run-local:; anvil --block-time 12 --chain-id 31337
