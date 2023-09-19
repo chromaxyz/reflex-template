@@ -40,9 +40,7 @@ contract AppTest is Test, AppConstants {
         installer = new Installer(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: 1,
-                moduleUpgradeable: true
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT
             })
         );
 
@@ -50,9 +48,7 @@ contract AppTest is Test, AppConstants {
         decrementCounter = new DecrementCounter(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_DECREMENT_COUNTER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: 1,
-                moduleUpgradeable: true
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT
             })
         );
 
@@ -60,9 +56,7 @@ contract AppTest is Test, AppConstants {
         incrementCounter = new IncrementCounter(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INCREMENT_COUNTER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: 1,
-                moduleUpgradeable: true
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT
             })
         );
 
@@ -70,7 +64,9 @@ contract AppTest is Test, AppConstants {
         dispatcher = new AppDispatcher(address(this), address(installer));
 
         // Fetch installer endpoint.
-        installerEndpoint = Installer(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
+        installerEndpoint = Installer(
+            dispatcher.getEndpoint(_MODULE_ID_INSTALLER)
+        );
 
         // Install modules.
         address[] memory moduleAddresses = new address[](2);
@@ -79,10 +75,14 @@ contract AppTest is Test, AppConstants {
         installerEndpoint.addModules(moduleAddresses);
 
         // Fetch decrement counter endpoint.
-        decrementCounterEndpoint = DecrementCounter(dispatcher.getEndpoint(_MODULE_ID_DECREMENT_COUNTER));
+        decrementCounterEndpoint = DecrementCounter(
+            dispatcher.getEndpoint(_MODULE_ID_DECREMENT_COUNTER)
+        );
 
         // Fetch increment counter endpoint.
-        incrementCounterEndpoint = IncrementCounter(dispatcher.getEndpoint(_MODULE_ID_INCREMENT_COUNTER));
+        incrementCounterEndpoint = IncrementCounter(
+            dispatcher.getEndpoint(_MODULE_ID_INCREMENT_COUNTER)
+        );
     }
 
     function testUnitCounterIncrementDecrement() public {

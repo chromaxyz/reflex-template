@@ -62,31 +62,30 @@ contract DeployScript is Script, AppConstants {
         installerImplementation = new Installer(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT
             })
         );
 
-        dispatcher = new AppDispatcher(msg.sender, address(installerImplementation));
+        dispatcher = new AppDispatcher(
+            msg.sender,
+            address(installerImplementation)
+        );
 
-        installerEndpoint = Installer(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
+        installerEndpoint = Installer(
+            dispatcher.getEndpoint(_MODULE_ID_INSTALLER)
+        );
 
         decrementCounterImplementation = new DecrementCounter(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_DECREMENT_COUNTER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_DECREMENT_COUNTER,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_DECREMENT_COUNTER
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT
             })
         );
 
         incrementCounterImplementation = new IncrementCounter(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INCREMENT_COUNTER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INCREMENT_COUNTER,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INCREMENT_COUNTER
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT
             })
         );
 
@@ -97,16 +96,38 @@ contract DeployScript is Script, AppConstants {
 
         vm.stopBroadcast();
 
-        decrementCounterEndpoint = DecrementCounter(dispatcher.getEndpoint(_MODULE_ID_DECREMENT_COUNTER));
-        incrementCounterEndpoint = IncrementCounter(dispatcher.getEndpoint(_MODULE_ID_INCREMENT_COUNTER));
+        decrementCounterEndpoint = DecrementCounter(
+            dispatcher.getEndpoint(_MODULE_ID_DECREMENT_COUNTER)
+        );
+        incrementCounterEndpoint = IncrementCounter(
+            dispatcher.getEndpoint(_MODULE_ID_INCREMENT_COUNTER)
+        );
 
         console2.log("Dispatcher                      :", address(dispatcher));
-        console2.log("Installer implementation        :", address(installerImplementation));
-        console2.log("Installer endpoint              :", address(installerEndpoint));
-        console2.log("Decrement counter implementation:", address(decrementCounterImplementation));
-        console2.log("Decrement counter endpoint      :", address(decrementCounterEndpoint));
-        console2.log("Increment counter implementation:", address(incrementCounterImplementation));
-        console2.log("Increment counter endpoint      :", address(incrementCounterEndpoint));
+        console2.log(
+            "Installer implementation        :",
+            address(installerImplementation)
+        );
+        console2.log(
+            "Installer endpoint              :",
+            address(installerEndpoint)
+        );
+        console2.log(
+            "Decrement counter implementation:",
+            address(decrementCounterImplementation)
+        );
+        console2.log(
+            "Decrement counter endpoint      :",
+            address(decrementCounterEndpoint)
+        );
+        console2.log(
+            "Increment counter implementation:",
+            address(incrementCounterImplementation)
+        );
+        console2.log(
+            "Increment counter endpoint      :",
+            address(incrementCounterEndpoint)
+        );
 
         /* solhint-enable no-console */
     }
