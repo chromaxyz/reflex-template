@@ -24,19 +24,6 @@ import {AppDispatcher} from "../src/AppDispatcher.sol";
 contract DeployScript is Script, AppConstants {
     /* solhint-disable no-console */
 
-    // =========
-    // Constants
-    // =========
-
-    uint32 internal constant _MODULE_VERSION_INSTALLER = 1;
-    bool internal constant _MODULE_UPGRADEABLE_INSTALLER = true;
-
-    uint32 internal constant _MODULE_VERSION_DECREMENT_COUNTER = 1;
-    bool internal constant _MODULE_UPGRADEABLE_DECREMENT_COUNTER = true;
-
-    uint32 internal constant _MODULE_VERSION_INCREMENT_COUNTER = 1;
-    bool internal constant _MODULE_UPGRADEABLE_INCREMENT_COUNTER = true;
-
     // =======
     // Storage
     // =======
